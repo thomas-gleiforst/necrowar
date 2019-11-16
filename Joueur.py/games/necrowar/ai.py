@@ -48,15 +48,19 @@ class AI(BaseAI):
         self.aoes = 0
         self.towers = 0
         self.all_built = False
+        self.phase = 1
         self.our_mines = []
-        for x in self.game.map_width():
-            for y in self.game.map_height():
+        for x in range(self.game.map_width()):
+            for y in range(self.game.map_height()):
                 for unit in self.game.units():
-
                     if self.game.get_tile_at(x,y).is_gold_mine:
-                        #if self.get_tile_at(x+1, y).owner() is NULL and self.get_tile_at(x-1, y).owner() is
-                        self.our_mines += self.game.get_tile_at(x,y)
-                        ##if self.get_tile_at(x-1, y)
+                        if self.get_tile_at(x+1, y).owner() is NULL and self.get_tile_at(x-1, y).owner() is self:
+                            self.our_mines += self.game.get_tile_at(x,y)
+                        if self.get_tile_at(x-1, y).owner() is self and self.get_tile_at(x+1, y).owner() is NULL:
+                            self.our_mines += self.game.get_tile_at(x,y)
+                        if (self.get_tile_at(x+1, y).owner() is self and self.get_tile_at(x-1, y).owner() is not self) or (self.get_tile_at(x+1, y).owner() is not self and self.get_tile_at(x-1, y).owner() is self):
+                            self.our_mines += self.game.get_tile_at(x,y)
+
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         self.past_tower_list = [] # How many towers we built last round
         self.past_tower_num = 0 # Number of towers that we last had
@@ -119,66 +123,83 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+        '''
+        Rebuild
+        '''
+        for towers in self.destroyed_towers:
+            build_tower(towers)
+
 
         """
         Generating workers on strategic turns
         """
         if self.turnCount == 1:
             i = 0
-            for i < 10:
-                self.spawn_worker()
+            while i < 10:
+                self.tile.spawn_worker()
                 i += 1
         elif self.game.river_phase():
             i = 0
             while self._gold > 0 and i < 3:
-                self.spawn_worker()
+                self.tile.spawn_worker()
                 i += 1
 
 
 
         #Make workers go to the mines/river
 
-        for x in self.game.map_width():
-            for y in self.game.map_height():
-                for mine in self.all_mines:
-                    break
-                    #there's not a worker in the mine and the river isn't flooded
-
-
+        for mine in our_mines:
+            if not mine.unit():
+                closest_worker = self.closest_worker(mine)
+                path = closest_worker.find_path(mine)
+                for tiles in path:
+                    closest_worker.move(tiles)
+                    if closest_worker.moves() == 0:
+                        return
+            if mine.unit():
+                mine.unit().mine()
 
 
         '''
         Generating towers
         '''
+        i = 0
         while(self.player.gold() >= 30 and self.player.mana() >= 30 and not self.all_built):
-            if x >= self.game.map_height():
+            if i >= len(self.player.side()):
                 self.all_built = True
-            if y >= self.game._map_width():
-                y = 0
-            if(self.game.get_tile_at(x,y).is_path()):
-                for neighbor in self.game.get_tile_at(x,y).get_neighbors():
-                    if neighbor.is_grass() and not neighbor.is_tower():
-                        build_tower(neighbor)
+
+            if(self.player.side()[i].is_path()):
+                for neighbor in self.player.side()[i].get_neighbors():
+                    if self.phase == 1 and neighbor.is_grass() and not neighbor.is_tower():
+                        self.build_tower(neighbor)
                         break
-                    elif(self.phase2):
+                    elif self.phase == 2:
                         for neighborsneighbor in neighbor.get_neighbors():
                             if neighborsneighbor.is_grass() and neighborsneighbor.is_tower():
-                                build_tower(neighbor)
+                                self.build_tower(neighbor)
                                 break
                         else:
                             continue
                         break
-            x+=1
-            y+=1
+            i+=1
+
+        '''
+        Spawn time
+        '''
+
+        if self.phase == 3:
+            while(self.player.gold() >= 20 and self.player.mana() >= 5):
+                self.tile.spawn_unit("ghoul")
+
 
         return True
         # <<-- /Creer-Merge: runTurn -->>
     def build_tower(self, tile):
-        unit = closest_worker()
+        unit = self.closest_worker()
         path = worker.find_path(neighbor)
         for tiles in path:
             worker.move(tiles)
-            if worker.moves == 0:
+            if worker.moves() == 0:
                 return
         if worker.x() == neighbor.x() and worker.y() is neighbor.y():
             if self.towers % 4 < 2 and self.player.gold() >= 30 and self.player.mana() >= 30:
@@ -193,7 +214,7 @@ class AI(BaseAI):
         best_distance = 9999
         best_worker = 0
         for unit in self.game.units():
-            if unit.job() == "worker":
+            if unit.job() == "worker" and not unit.acted() and unit.moves() > 0:
                 distance = (((tile.x()-unit.x())**2+(tile.y()-unit.y())**2))**(1/2)
                 if distance < best_distance:
                     best_distance = distance
