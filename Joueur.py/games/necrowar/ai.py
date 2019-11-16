@@ -50,7 +50,7 @@ class AI(BaseAI):
         self.all_built = False
         self.phase = 1
         self.our_mines = []
-        for x in range(self.game.map_width()):
+        for x in range(self.game.map_width):
             for y in range(self.game.map_height()):
                 for unit in self.game.units():
                     if self.game.get_tile_at(x,y).is_gold_mine:
