@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
+/** The default format string we use for moment time stamps */
+exports.DEFAULT_MOMENT_FORMAT = "YYYY.MM.DD.HH.mm.ss.SSS";
+/**
+ * Returns a string formatted with a time via moment.
+ *
+ * @param epoch An optional epoch to init time to.
+ * @returns Time formatted to a string.
+ */
+function momentString(epoch) {
+    return moment(epoch).format(exports.DEFAULT_MOMENT_FORMAT);
+}
+exports.momentString = momentString;
+/**
+ * Takes a string that was made via momentString and transforms it back to an
+ * epoch.
+ *
+ * @param str A string formatted from momentString.
+ * @returns The epoch that was used to create that moment string.
+ */
+function stringToMoment(str) {
+    return moment(str, exports.DEFAULT_MOMENT_FORMAT);
+}
+exports.stringToMoment = stringToMoment;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibW9tZW50LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3V0aWxzL21vbWVudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLGlDQUFpQztBQUVqQyw4REFBOEQ7QUFDakQsUUFBQSxxQkFBcUIsR0FBRyx5QkFBeUIsQ0FBQztBQUUvRDs7Ozs7R0FLRztBQUNILFNBQWdCLFlBQVksQ0FBQyxLQUFjO0lBQ3ZDLE9BQU8sTUFBTSxDQUFDLEtBQUssQ0FBQyxDQUFDLE1BQU0sQ0FBQyw2QkFBcUIsQ0FBQyxDQUFDO0FBQ3ZELENBQUM7QUFGRCxvQ0FFQztBQUVEOzs7Ozs7R0FNRztBQUNILFNBQWdCLGNBQWMsQ0FBQyxHQUFXO0lBQ3RDLE9BQU8sTUFBTSxDQUFDLEdBQUcsRUFBRSw2QkFBcUIsQ0FBQyxDQUFDO0FBQzlDLENBQUM7QUFGRCx3Q0FFQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCAqIGFzIG1vbWVudCBmcm9tIFwibW9tZW50XCI7XG5cbi8qKiBUaGUgZGVmYXVsdCBmb3JtYXQgc3RyaW5nIHdlIHVzZSBmb3IgbW9tZW50IHRpbWUgc3RhbXBzICovXG5leHBvcnQgY29uc3QgREVGQVVMVF9NT01FTlRfRk9STUFUID0gXCJZWVlZLk1NLkRELkhILm1tLnNzLlNTU1wiO1xuXG4vKipcbiAqIFJldHVybnMgYSBzdHJpbmcgZm9ybWF0dGVkIHdpdGggYSB0aW1lIHZpYSBtb21lbnQuXG4gKlxuICogQHBhcmFtIGVwb2NoIEFuIG9wdGlvbmFsIGVwb2NoIHRvIGluaXQgdGltZSB0by5cbiAqIEByZXR1cm5zIFRpbWUgZm9ybWF0dGVkIHRvIGEgc3RyaW5nLlxuICovXG5leHBvcnQgZnVuY3Rpb24gbW9tZW50U3RyaW5nKGVwb2NoPzogbnVtYmVyKTogc3RyaW5nIHtcbiAgICByZXR1cm4gbW9tZW50KGVwb2NoKS5mb3JtYXQoREVGQVVMVF9NT01FTlRfRk9STUFUKTtcbn1cblxuLyoqXG4gKiBUYWtlcyBhIHN0cmluZyB0aGF0IHdhcyBtYWRlIHZpYSBtb21lbnRTdHJpbmcgYW5kIHRyYW5zZm9ybXMgaXQgYmFjayB0byBhblxuICogZXBvY2guXG4gKlxuICogQHBhcmFtIHN0ciBBIHN0cmluZyBmb3JtYXR0ZWQgZnJvbSBtb21lbnRTdHJpbmcuXG4gKiBAcmV0dXJucyBUaGUgZXBvY2ggdGhhdCB3YXMgdXNlZCB0byBjcmVhdGUgdGhhdCBtb21lbnQgc3RyaW5nLlxuICovXG5leHBvcnQgZnVuY3Rpb24gc3RyaW5nVG9Nb21lbnQoc3RyOiBzdHJpbmcpOiBtb21lbnQuTW9tZW50IHtcbiAgICByZXR1cm4gbW9tZW50KHN0ciwgREVGQVVMVF9NT01FTlRfRk9STUFUKTtcbn1cbiJdfQ==
