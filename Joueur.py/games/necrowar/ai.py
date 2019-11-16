@@ -33,15 +33,39 @@ class AI(BaseAI):
             str: The name of your Player.
         """
         # <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "Necrowar Python Player" # REPLACE THIS WITH YOUR TEAM NAME
+        return "PythonPlusPlus" # REPLACE THIS WITH YOUR TEAM NAME
         # <<-- /Creer-Merge: get-name -->>
 
     def start(self):
         """ This is called once the game starts and your AI knows its player and
             game. You can initialize your AI here.
         """
+
+        '''
+        Find coordinates of all the mines
+        '''
+        self.cleansers = 0
+        self.aoes = 0
+        self.towers = 0
+        self.all_built = False
+        self.our_mines = []
+        for x in self.game.map_width():
+            for y in self.game.map_height():
+                for unit in self.game.units():
+
+                    if self.game.get_tile_at(x,y).is_gold_mine:
+                        #if self.get_tile_at(x+1, y).owner() is NULL and self.get_tile_at(x-1, y).owner() is
+                        self.our_mines += self.game.get_tile_at(x,y)
+                        ##if self.get_tile_at(x-1, y)
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        # replace with your start logic
+        self.past_tower_list = [] # How many towers we built last round
+        self.past_tower_num = 0 # Number of towers that we last had
+        self.destroyed_towers = [] # Towers that we lost
+        self.new_towers = [] # Towers that we just built
+
+        # TODO: Initialize our AI here!!!!!
+
+
         # <<-- /Creer-Merge: start -->>
 
     def game_updated(self):
@@ -49,7 +73,29 @@ class AI(BaseAI):
         tracking anything you can update it here.
         """
         # <<-- Creer-Merge: game-updated -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        # replace with your game updated logic
+        '''
+        This code detects any new or destroyed towers
+        '''
+        # Runs when our number of towers are different from last round
+        if self.past_tower_num != self.towers:
+            self.destroyed_towers = []
+            self.new_towers = []
+
+            # For all current towers...
+            for cur_tower in self.player.towers:
+                # If it is not in past towers, that means that this is a new tower
+                if cur_tower not in self.past_tower_list:
+                    self.new_towers.append(cur_tower)
+
+            # For all past past towers...
+            for past_tower in self.past_tower_list:
+                # If past tower isn't in current tower list, we lost that tower
+                if past_tower not in self.player.towers:
+                    self.destroyed_towers.append(past_tower)
+
+        self.past_tower_num = self.towers # Update our number of towers
+        self.past_tower_list = self.player.towers # Update our tower list
+
         # <<-- /Creer-Merge: game-updated -->>
 
     def end(self, won, reason):
@@ -65,6 +111,7 @@ class AI(BaseAI):
         # replace with your end logic
         # <<-- /Creer-Merge: end -->>
     def run_turn(self):
+
         """ This is called every time it is this AI.player's turn.
 
         Returns:
@@ -72,8 +119,87 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+
+        """
+        Generating workers on strategic turns
+        """
+        if self.turnCount == 1:
+            i = 0
+            for i < 10:
+                self.spawn_worker()
+                i += 1
+        elif self.game.river_phase():
+            i = 0
+            while self._gold > 0 and i < 3:
+                self.spawn_worker()
+                i += 1
+
+
+
+        #Make workers go to the mines/river
+
+        for x in self.game.map_width():
+            for y in self.game.map_height():
+                for mine in self.all_mines:
+                    break
+                    #there's not a worker in the mine and the river isn't flooded
+
+
+
+
+        '''
+        Generating towers
+        '''
+        while(self.player.gold() >= 30 and self.player.mana() >= 30 and not self.all_built):
+            if x >= self.game.map_height():
+                self.all_built = True
+            if y >= self.game._map_width():
+                y = 0
+            if(self.game.get_tile_at(x,y).is_path()):
+                for neighbor in self.game.get_tile_at(x,y).get_neighbors():
+                    if neighbor.is_grass() and not neighbor.is_tower():
+                        build_tower(neighbor)
+                        break
+                    elif(self.phase2):
+                        for neighborsneighbor in neighbor.get_neighbors():
+                            if neighborsneighbor.is_grass() and neighborsneighbor.is_tower():
+                                build_tower(neighbor)
+                                break
+                        else:
+                            continue
+                        break
+            x+=1
+            y+=1
+
         return True
         # <<-- /Creer-Merge: runTurn -->>
+    def build_tower(self, tile):
+        unit = closest_worker()
+        path = worker.find_path(neighbor)
+        for tiles in path:
+            worker.move(tiles)
+            if worker.moves == 0:
+                return
+        if worker.x() == neighbor.x() and worker.y() is neighbor.y():
+            if self.towers % 4 < 2 and self.player.gold() >= 30 and self.player.mana() >= 30:
+                worker.build("cleansing")
+                self.cleansers += 1
+            elif self.towers % 4 < 4 and self.player.gold() >= 40 and self.player.mana() >= 15:
+                worker.build("aoe")
+                self.aoe += 1
+            return
+
+    def closest_worker(self, tile):
+        best_distance = 9999
+        best_worker = 0
+        for unit in self.game.units():
+            if unit.job() == "worker":
+                distance = (((tile.x()-unit.x())**2+(tile.y()-unit.y())**2))**(1/2)
+                if distance < best_distance:
+                    best_distance = distance
+                    best_worker = unit
+
+        return best_worker
 
     def find_path(self, start, goal):
         """A very basic path finding algorithm (Breadth First Search) that when
