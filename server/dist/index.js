@@ -1,0 +1,13 @@
+"use strict";
+/** This file is the entry-point to start Cerveau */
+Object.defineProperty(exports, "__esModule", { value: true });
+// first code to execute, like a mini sanity test
+console.log("~~~ Cerveau is starting ~~~"); // tslint:disable-line:no-console
+process.title = "Cerveau Game Server";
+const setup_thread_1 = require("./core/setup-thread");
+setup_thread_1.setupThread(); // We must do this before doing any aliased imports below
+const server_1 = require("./core/server");
+server_1.Lobby.getInstance(); // This will create the singleton Lobby instance
+const app_1 = require("./web/app");
+app_1.setupWebServer();
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLG9EQUFvRDs7QUFFcEQsaURBQWlEO0FBQ2pELE9BQU8sQ0FBQyxHQUFHLENBQUMsNkJBQTZCLENBQUMsQ0FBQyxDQUFDLGlDQUFpQztBQUU3RSxPQUFPLENBQUMsS0FBSyxHQUFHLHFCQUFxQixDQUFDO0FBRXRDLHNEQUFrRDtBQUNsRCwwQkFBVyxFQUFFLENBQUMsQ0FBQyx5REFBeUQ7QUFFeEUsMENBQXNDO0FBQ3RDLGNBQUssQ0FBQyxXQUFXLEVBQUUsQ0FBQyxDQUFDLGdEQUFnRDtBQUVyRSxtQ0FBMkM7QUFDM0Msb0JBQWMsRUFBRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLyoqIFRoaXMgZmlsZSBpcyB0aGUgZW50cnktcG9pbnQgdG8gc3RhcnQgQ2VydmVhdSAqL1xuXG4vLyBmaXJzdCBjb2RlIHRvIGV4ZWN1dGUsIGxpa2UgYSBtaW5pIHNhbml0eSB0ZXN0XG5jb25zb2xlLmxvZyhcIn5+fiBDZXJ2ZWF1IGlzIHN0YXJ0aW5nIH5+flwiKTsgLy8gdHNsaW50OmRpc2FibGUtbGluZTpuby1jb25zb2xlXG5cbnByb2Nlc3MudGl0bGUgPSBcIkNlcnZlYXUgR2FtZSBTZXJ2ZXJcIjtcblxuaW1wb3J0IHsgc2V0dXBUaHJlYWQgfSBmcm9tIFwiLi9jb3JlL3NldHVwLXRocmVhZFwiO1xuc2V0dXBUaHJlYWQoKTsgLy8gV2UgbXVzdCBkbyB0aGlzIGJlZm9yZSBkb2luZyBhbnkgYWxpYXNlZCBpbXBvcnRzIGJlbG93XG5cbmltcG9ydCB7IExvYmJ5IH0gZnJvbSBcIi4vY29yZS9zZXJ2ZXJcIjtcbkxvYmJ5LmdldEluc3RhbmNlKCk7IC8vIFRoaXMgd2lsbCBjcmVhdGUgdGhlIHNpbmdsZXRvbiBMb2JieSBpbnN0YW5jZVxuXG5pbXBvcnQgeyBzZXR1cFdlYlNlcnZlciB9IGZyb20gXCIuL3dlYi9hcHBcIjtcbnNldHVwV2ViU2VydmVyKCk7XG4iXX0=

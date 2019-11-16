@@ -1,0 +1,36 @@
+"use strict";
+// this setups up common (global) stuff for all threads, regardless of main
+// or worker threads
+Object.defineProperty(exports, "__esModule", { value: true });
+// we need to register the typescript paths so we can load from the root
+const fs_1 = require("fs");
+const json5_1 = require("json5");
+const tsconfig_paths_1 = require("tsconfig-paths");
+/**
+ * Sets up a thread and registers runtime TypeScript functions to easier
+ * debugging.
+ */
+function setupThread() {
+    // yes read in sync. We don't want async stuff running without having their
+    // tsconfig paths setup, or they will probably break.
+    const file = fs_1.readFileSync("tsconfig.json");
+    const tsconfig = json5_1.parse(file.toString());
+    if (!tsconfig.compilerOptions || !tsconfig.compilerOptions.paths) {
+        throw new Error("Cannot setup thread as tsconfig has no paths!");
+    }
+    tsconfig_paths_1.register({
+        baseUrl: "./",
+        paths: tsconfig.compilerOptions.paths,
+    });
+}
+exports.setupThread = setupThread;
+/**
+ * Setups up the current thread with data from a loaded config file.
+ *
+ * @param processTitle - the title to set this thread to (for *Unix)
+ */
+function setupThreadWithConfig(processTitle) {
+    process.title = processTitle || "Cerveau Game Server";
+}
+exports.setupThreadWithConfig = setupThreadWithConfig;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2V0dXAtdGhyZWFkLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL2NvcmUvc2V0dXAtdGhyZWFkLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQSwyRUFBMkU7QUFDM0Usb0JBQW9COztBQUVwQix3RUFBd0U7QUFDeEUsMkJBQWtDO0FBQ2xDLGlDQUE4QjtBQUM5QixtREFBMEM7QUFHMUM7OztHQUdHO0FBQ0gsU0FBZ0IsV0FBVztJQUN2QiwyRUFBMkU7SUFDM0UscURBQXFEO0lBQ3JELE1BQU0sSUFBSSxHQUFHLGlCQUFZLENBQUMsZUFBZSxDQUFDLENBQUM7SUFDM0MsTUFBTSxRQUFRLEdBQUcsYUFBSyxDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsQ0FBYSxDQUFDO0lBRXBELElBQUksQ0FBQyxRQUFRLENBQUMsZUFBZSxJQUFJLENBQUMsUUFBUSxDQUFDLGVBQWUsQ0FBQyxLQUFLLEVBQUU7UUFDOUQsTUFBTSxJQUFJLEtBQUssQ0FBQywrQ0FBK0MsQ0FBQyxDQUFDO0tBQ3BFO0lBRUQseUJBQVEsQ0FBQztRQUNMLE9BQU8sRUFBRSxJQUFJO1FBQ2IsS0FBSyxFQUFFLFFBQVEsQ0FBQyxlQUFlLENBQUMsS0FBSztLQUN4QyxDQUFDLENBQUM7QUFDUCxDQUFDO0FBZEQsa0NBY0M7QUFFRDs7OztHQUlHO0FBQ0gsU0FBZ0IscUJBQXFCLENBQUMsWUFBb0I7SUFDdEQsT0FBTyxDQUFDLEtBQUssR0FBRyxZQUFZLElBQUkscUJBQXFCLENBQUM7QUFDMUQsQ0FBQztBQUZELHNEQUVDIiwic291cmNlc0NvbnRlbnQiOlsiLy8gdGhpcyBzZXR1cHMgdXAgY29tbW9uIChnbG9iYWwpIHN0dWZmIGZvciBhbGwgdGhyZWFkcywgcmVnYXJkbGVzcyBvZiBtYWluXG4vLyBvciB3b3JrZXIgdGhyZWFkc1xuXG4vLyB3ZSBuZWVkIHRvIHJlZ2lzdGVyIHRoZSB0eXBlc2NyaXB0IHBhdGhzIHNvIHdlIGNhbiBsb2FkIGZyb20gdGhlIHJvb3RcbmltcG9ydCB7IHJlYWRGaWxlU3luYyB9IGZyb20gXCJmc1wiO1xuaW1wb3J0IHsgcGFyc2UgfSBmcm9tIFwianNvbjVcIjtcbmltcG9ydCB7IHJlZ2lzdGVyIH0gZnJvbSBcInRzY29uZmlnLXBhdGhzXCI7XG5pbXBvcnQgeyBUc2NvbmZpZyB9IGZyb20gXCJ0c2NvbmZpZy1wYXRocy9saWIvdHNjb25maWctbG9hZGVyXCI7XG5cbi8qKlxuICogU2V0cyB1cCBhIHRocmVhZCBhbmQgcmVnaXN0ZXJzIHJ1bnRpbWUgVHlwZVNjcmlwdCBmdW5jdGlvbnMgdG8gZWFzaWVyXG4gKiBkZWJ1Z2dpbmcuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBzZXR1cFRocmVhZCgpOiB2b2lkIHtcbiAgICAvLyB5ZXMgcmVhZCBpbiBzeW5jLiBXZSBkb24ndCB3YW50IGFzeW5jIHN0dWZmIHJ1bm5pbmcgd2l0aG91dCBoYXZpbmcgdGhlaXJcbiAgICAvLyB0c2NvbmZpZyBwYXRocyBzZXR1cCwgb3IgdGhleSB3aWxsIHByb2JhYmx5IGJyZWFrLlxuICAgIGNvbnN0IGZpbGUgPSByZWFkRmlsZVN5bmMoXCJ0c2NvbmZpZy5qc29uXCIpO1xuICAgIGNvbnN0IHRzY29uZmlnID0gcGFyc2UoZmlsZS50b1N0cmluZygpKSBhcyBUc2NvbmZpZztcblxuICAgIGlmICghdHNjb25maWcuY29tcGlsZXJPcHRpb25zIHx8ICF0c2NvbmZpZy5jb21waWxlck9wdGlvbnMucGF0aHMpIHtcbiAgICAgICAgdGhyb3cgbmV3IEVycm9yKFwiQ2Fubm90IHNldHVwIHRocmVhZCBhcyB0c2NvbmZpZyBoYXMgbm8gcGF0aHMhXCIpO1xuICAgIH1cblxuICAgIHJlZ2lzdGVyKHtcbiAgICAgICAgYmFzZVVybDogXCIuL1wiLFxuICAgICAgICBwYXRoczogdHNjb25maWcuY29tcGlsZXJPcHRpb25zLnBhdGhzLFxuICAgIH0pO1xufVxuXG4vKipcbiAqIFNldHVwcyB1cCB0aGUgY3VycmVudCB0aHJlYWQgd2l0aCBkYXRhIGZyb20gYSBsb2FkZWQgY29uZmlnIGZpbGUuXG4gKlxuICogQHBhcmFtIHByb2Nlc3NUaXRsZSAtIHRoZSB0aXRsZSB0byBzZXQgdGhpcyB0aHJlYWQgdG8gKGZvciAqVW5peClcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIHNldHVwVGhyZWFkV2l0aENvbmZpZyhwcm9jZXNzVGl0bGU6IHN0cmluZyk6IHZvaWQge1xuICAgIHByb2Nlc3MudGl0bGUgPSBwcm9jZXNzVGl0bGUgfHwgXCJDZXJ2ZWF1IEdhbWUgU2VydmVyXCI7XG59XG4iXX0=
