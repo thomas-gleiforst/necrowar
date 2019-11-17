@@ -44,13 +44,19 @@ class AI(BaseAI):
         '''
         Find coordinates of all the mines (among other things)
         '''
+        self.num_units = 0
         self.cleansers = 0
         self.aoes = 0
         self.towers = 0
         self.all_built = False
         self.phase = 1
         self.our_mines = []
+        self.river_mines = []
+        self.left_primary_cleanser_targets = [self.game.get_tile_at(4,8), self.game.get_tile_at(4,9), self.game.get_tile_at(4,12), self.game.get_tile_at(4,13), self.game.get_tile_at(4,16), self.game.get_tile_at(4,17), self.game.get_tile_at(4,20), self.game.get_tile_at(4,21), self.game.get_tile_at(7,8), self.game.get_tile_at(7,9), self.game.get_tile_at(7,12), self.game.get_tile_at(7, 13), self.game.get_tile_at(7,16), self.game.get_tile_at(7,17), self.game.get_tile_at(7,20), self.game.get_tile_at(7,21)]
+        self.left_primary_aoe_targets = []
+        self.river_mines = [self.game.get_tile_at(31, 15), self.game.get_tile_at(31, 16), self.game.get_tile_at(31, 17)]
 
+        # Scan for gold mines, worker spawn tile, mob spawn tile
         for tile in self.player.side:
             if tile.is_gold_mine:
                 self.our_mines.append(tile)
@@ -58,6 +64,20 @@ class AI(BaseAI):
                 self.worker_spawn = tile
             elif tile.is_unit_spawn:
                 self.unit_spawn = tile
+
+        '''
+        # Scan for river mines
+        for tile in self.game.tiles:
+            if tile.x > 28 and tile.x < 35:
+                if tile.y > 15 and tile.y < 20:
+                    if title.is_gold_mine:
+                        self.river_mines.append(tile)
+        '''
+
+        if self.worker_spawn.x > 31:
+            self.river_spots = [self.game.get_tile_at(33,7),self.game.get_tile_at(33,8),self.game.get_tile_at(33,9),self.game.get_tile_at(33,10),self.game.get_tile_at(33,11),self.game.get_tile_at(33,12),self.game.get_tile_at(33,13),self.game.get_tile_at(33,19),self.game.get_tile_at(33,20),self.game.get_tile_at(33,21),self.game.get_tile_at(33,22)]
+        else:
+            self.river_spots = [self.game.get_tile_at(29,7),self.game.get_tile_at(29,8),self.game.get_tile_at(29,9),self.game.get_tile_at(29,10),self.game.get_tile_at(29,11),self.game.get_tile_at(29,12),self.game.get_tile_at(29,13),self.game.get_tile_at(29,19),self.game.get_tile_at(29,20),self.game.get_tile_at(29,21),self.game.get_tile_at(29,22)]
 
         self.past_tower_list = [] # How many towers we built last round
         self.past_tower_num = 0 # Number of towers that we last had
@@ -130,26 +150,65 @@ class AI(BaseAI):
         """
         Generating workers on strategic turns
         """
-        if self.game.current_turn == 1 or self.game.current_turn == 2:
-            i = 0
-            while i < 10:
+        while(self.num_units <= 25 and self.player.gold >= 10):
+            print(self.game.current_turn, self.player.units)
+            if self.worker_spawn.unit == None:
                 spawned = self.worker_spawn.spawn_worker()
-                if i < 4 and spawned:
-                    if self.player.units[-1].tile.x > 31:
-                        for j in range(4-i):
-                            self.player.units[-1].move(self.player.units[-1].tile.tile_north)
-                    else:
-                        for j in range(4-i):
-                            self.player.units[-1].move(self.player.units[-1].tile.tile_south)
-                elif spawned:
-                    if self.player.units[-1].tile.x > 31:
-                        for j in range(10-i):
-                            self.player.units[-1].move(self.player.units[-1].tile.tile_west)
-                    else:
-                        for j in range(10-i):
-                            self.player.units[-1].move(self.player.units[-1].tile.tile_east)
-                i += 1
-        elif self.game.current_turn == self.game.river_phase - 2:
+            else:
+                break
+            if self.num_units < 4 and spawned: ##inland miners
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(4-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_north)
+                else:
+                    for j in range(4-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_south)
+                self.num_units += 1
+
+            elif self.num_units < 7 and spawned: ##island miners
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(7-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
+                else:
+                    for j in range(7-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+                self.num_units += 1
+
+            elif self.num_units < 11 and spawned: ##wall side builders
+                self.num_units += 1
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(15-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_south)
+                else:
+                    for j in range(15-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_north)
+            elif self.num_units < 16 and spawned: ##fishers
+                self.num_units += 1
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(16-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
+                else:
+                    for j in range(16-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+            elif self.num_units < 21 and spawned: ##river side builders
+                self.num_units += 1
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(21-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
+                else:
+                    for j in range(21-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+            elif self.num_units < 25 and spawned:
+                self.num_units += 1
+                if self.player.units[-1].tile.x > 31:
+                    for j in range(25-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_north)
+                else:
+                    for j in range(25-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_south)
+
+
+        if self.game.current_turn == self.game.river_phase - 2 or self.game.current_turn == self.game.river_phase - 3:
             i = 0
             while self.player.gold > 0 and i < 3:
                 self.worker_spawn.spawn_worker()
@@ -163,26 +222,83 @@ class AI(BaseAI):
                     i += 1
 
 
+
         '''
-        Make workers go to the mines/river
+        Make workers go to the mines/river mines
         '''
         if len(self.player.units) != 0:
+            # For all of our mining spots...
             for mine in self.our_mines:
                 if mine.unit == None:
-                    closest_worker = self.closest_worker(mine, 1, 7)
+                    closest_worker = self.closest_worker(mine, 1, 4)
+                    if closest_worker == None:
+                        break
                     path = self.find_path(closest_worker.tile, mine)
-                    print(path)
+                    #print(mine, path)
                     for tiles in path:
                         closest_worker.move(tiles)
                         if closest_worker.moves == 0:
-                            return
+                            break
                 if mine.unit != None:
-                    mine.unit.mine()
+                    # The unit on the mine (mine.unit) needs
+                    # to mine the mine(mine(mine))
+                    mine.unit.mine(mine)
+                    #print(self.player.gold)
+
+            if self.num_units > 20:
+                min_index = 23
+                max_index = 9999
+            else:
+                min_index = 5
+                max_index = 7
+            for river_mine in self.river_mines:
+                if river_mine.unit == None:
+                    closest_worker = self.closest_worker(river_mine, min_index, max_index)
+                    if closest_worker == None:
+                        break
+                    path = self.find_path(closest_worker.tile, river_mine)
+                    for tiles in path:
+                        closest_worker.move(tiles)
+                        if closest_worker.moves == 0:
+                            break
+                if river_mine.unit != None:
+                    print("Mining the river")
+                    river_mine.unit.mine(river_mine)
+
+            '''
+            Move fisherman
+            '''
+            for fishing_spots in self.river_spots:
+                if fishing_spots.unit == None:
+                    closest_worker = self.closest_worker(fishing_spots, 11, 21)
+                    if closest_worker == None:
+                        break
+                    path = self.find_path(closest_worker.tile, fishing_spots)
+                    for tiles in path:
+                        closest_worker.move(tiles)
+                        if closest_worker.moves == 0:
+                            break
+                if fishing_spots.unit != None:
+                    print(fishing_spots.x, fishing_spots.y, fishing_spots.tile_east.is_river, fishing_spots.tile_west.is_river)
+                    if fishing_spots.tile_east.is_river:
+                        fishing_spots.unit.fish(fishing_spots.tile_east)
+                    else:
+                        fishing_spots.unit.fish(fishing_spots.tile_west)
+
+
+            '''
+            Move tower builders
+            '''
+            if self.player.side[0].x>31:
+                print("hi")
+            else:
+                for cleanser_target in self.left_primary_cleanser_targets:
+                    self.build_tower(cleanser_target)
+
 
 
         '''
         Generating towers
-        '''
         '''
         i = 0
         while(i < len(self.player.side) and self.player.gold >= 30 and self.player.mana >= 30 and not self.all_built):
@@ -204,20 +320,47 @@ class AI(BaseAI):
                         break
             i+=1
         '''
-        '''
         Spawn time
         '''
 
         if self.phase == 3:
             while(self.player.gold >= 20 and self.player.mana >= 5):
-                self.tile.spawn_unit("ghoul")
+                self.unit_spawn.spawn_unit("ghoul")
+
+                for unit in self.player.units:
+                    # Ghouls move if there is no castle tile. Otherwise ATTACK!
+                    if unit.job == "ghoul":
+                        ghoul_path = self.find_path(unit.tile, self.player.opponent.home_base())
+
+                        # If ghoul has moves it will move closer to the enemy
+                        if not unit.moves:
+                            for tile in ghoul_path:
+                                unit.move(tile)
+
+                                if unit.moves == 0:
+                                    break
+
+                            # Ghouls will attack any castle in sight
+                            for neighbor in unit.tile.get_neighbors():
+                                if neighbor.is_castle():
+                                    unit.attack(neighbor)
 
 
         return True
         # <<-- /Creer-Merge: runTurn -->>
+
     def build_tower(self, tile):
         if len(self.player.units):
-            unit = self.closest_worker(tile, 8, len(self.player.units))
+            if tile.x == 4:
+                unit = self.closest_worker(tile, 8, 11)
+            elif tile.x == 7:
+                unit = self.closest_worker(tile, 21, 25)
+            else:
+                unit = self.closest_worker(tile, 8, 11)
+
+            if unit == None:
+                return
+            ##unit = self.closest_worker(tile, 21, 25)
             path = self.find_path(unit.tile,tile)
             for tiles in path:
                 unit.move(tiles)
@@ -229,20 +372,25 @@ class AI(BaseAI):
                     self.cleansers += 1
                 elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 15:
                     unit.build("aoe")
-                    self.aoe += 1
+                    self.aoes += 1
                 return
         else:
             return
 
     def closest_worker(self, tile, low, high):
         best_distance = 9999
-        best_worker = self.game.units[0]
+        best_worker = None
+        #print("default", self.game.units[0])
         worker_count = 0
         for unit in self.game.units:
-            if unit.job == "worker":
+            #print(unit.owner, self.player)
+            #print(unit.job.title)
+            if unit.job.title == "worker" and unit.owner == self.player:
                 worker_count += 1
-                if worker_count > low and worker_count < high and not unit.acted and unit.moves > 0:
-                    distance = (((tile.x-unit.x)**2+(tile.y-unit.y)**2))**(1/2)
+                #print(worker_count >= low, worker_count <= high, unit.acted, unit.moves > 0)
+                if worker_count >= low and worker_count <= high and not unit.acted and unit.moves > 0:
+                    #print("AHHH")
+                    distance = len(self.find_path(unit.tile, tile))
                     if distance < best_distance:
                         best_distance = distance
                         best_worker = unit
@@ -299,9 +447,7 @@ class AI(BaseAI):
 
                 # if the tile exists, has not been explored or added to the
                 # fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and (
-                    neighbor.is_pathable()
-                ):
+                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river:
                     # add it to the tiles to be explored and add where it came
                     # from for path reconstruction.
                     fringe.append(neighbor)
