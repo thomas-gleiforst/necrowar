@@ -52,8 +52,17 @@ class AI(BaseAI):
         self.phase = 1
         self.our_mines = []
         self.river_mines = []
-        self.left_primary_cleanser_targets = [self.game.get_tile_at(4,8), self.game.get_tile_at(4,9), self.game.get_tile_at(4,12), self.game.get_tile_at(4,13), self.game.get_tile_at(4,16), self.game.get_tile_at(4,17), self.game.get_tile_at(4,20), self.game.get_tile_at(4,21), self.game.get_tile_at(7,8), self.game.get_tile_at(7,9), self.game.get_tile_at(7,12), self.game.get_tile_at(7, 13), self.game.get_tile_at(7,16), self.game.get_tile_at(7,17), self.game.get_tile_at(7,20), self.game.get_tile_at(7,21)]
-        self.left_primary_aoe_targets = []
+        self.right = self.player.side[0].x > 31
+        # First direction corresponds to side of the screen, and second
+        # direction corresponds to the side of the path
+        self.left_left_primary_targets = [self.game.get_tile_at(4,8), self.game.get_tile_at(4,9), self.game.get_tile_at(4,10), self.game.get_tile_at(4,11), self.game.get_tile_at(4,12), self.game.get_tile_at(4,13), self.game.get_tile_at(4,14), self.game.get_tile_at(4,15), self.game.get_tile_at(4,16), self.game.get_tile_at(4,17), self.game.get_tile_at(4,18), self.game.get_tile_at(4,19), self.game.get_tile_at(4,20), self.game.get_tile_at(4,21), self.game.get_tile_at(4, 22), self.game.get_tile_at(4,23), self.game.get_tile_at(4,24), self.game.get_tile_at(4,25), self.game.get_tile_at(4,26)]
+        self.left_right_primary_targets = [self.game.get_tile_at(7,8), self.game.get_tile_at(7,9), self. game.get_tile_at(7,10), self.game.get_tile_at(7,11), self.game.get_tile_at(7,12), self.game.get_tile_at(7, 13), self.game.get_tile_at(7,14), self.game.get_tile_at(7,15), self.game.get_tile_at(7,16), self.game.get_tile_at(7,17), self.game.get_tile_at(7,18), self.game.get_tile_at(7,19), self.game.get_tile_at(7,20), self.game.get_tile_at(7,21), self.game.get_tile_at(4,22)]
+        self.left_left_secondary_targets = [self.game.get_tile_at(3,8), self.game.get_tile_at(3,9), self.game.get_tile_at(3,10), self.game.get_tile_at(3,11), self.game.get_tile_at(3,12), self.game.get_tile_at(3,13), self.game.get_tile_at(3,14), self.game.get_tile_at(3,15), self.game.get_tile_at(3,16), self.game.get_tile_at(3,17), self.game.get_tile_at(3,18), self.game.get_tile_at(3,19), self.game.get_tile_at(3,20), self.game.get_tile_at(3,21), self.game.get_tile_at(3, 22), self.game.get_tile_at(3,23), self.game.get_tile_at(3,24), self.game.get_tile_at(3,25), self.game.get_tile_at(3,26)]
+        self.left_right_secondary_targets = [self.game.get_tile_at(8,8), self.game.get_tile_at(8,9), self. game.get_tile_at(8,10), self.game.get_tile_at(8,11), self.game.get_tile_at(8,12), self.game.get_tile_at(8, 13), self.game.get_tile_at(8,14), self.game.get_tile_at(8,15), self.game.get_tile_at(8,16), self.game.get_tile_at(8,17), self.game.get_tile_at(8,18), self.game.get_tile_at(8,19), self.game.get_tile_at(8,20), self.game.get_tile_at(8,21), self.game.get_tile_at(4,22)]
+        self.right_left_primary_targets = [self.game.get_tile_at(55, 26), self.game.get_tile_at(55,25), self.game.get_tile_at(55,24), self.game.get_tile_at(55,23), self.game.get_tile_at(55,22), self.game.get_tile_at(55,21), self.game.get_tile_at(55,20), self.game.get_tile_at(55,19), self.game.get_tile_at(55,18), self.game.get_tile_at(55,17), self.game.get_tile_at(55,16), self.game.get_tile_at(55,15), self.game.get_tile_at(55,14), self.game.get_tile_at(55,13), self.game.get_tile_at(55,12), self.game.get_tile_at(55,11), self.game.get_tile_at(55, 10), self.game.get_tile_at(55,9)]
+        self.right_right_primary_targets = [self.game.get_tile_at(58, 26), self.game.get_tile_at(58,25), self.game.get_tile_at(58,24), self.game.get_tile_at(58,23), self.game.get_tile_at(58,22), self.game.get_tile_at(58,21), self.game.get_tile_at(58,20), self.game.get_tile_at(58,19), self.game.get_tile_at(58,18), self.game.get_tile_at(58,17), self.game.get_tile_at(58,16), self.game.get_tile_at(58,15), self.game.get_tile_at(58,14), self.game.get_tile_at(58,13), self.game.get_tile_at(58,12), self.game.get_tile_at(58,11)]
+        self.right_left_secondary_targets = [self.game.get_tile_at(54, 26), self.game.get_tile_at(54,25), self.game.get_tile_at(54,24), self.game.get_tile_at(54,23), self.game.get_tile_at(54,22), self.game.get_tile_at(54,21), self.game.get_tile_at(54,20), self.game.get_tile_at(54,19), self.game.get_tile_at(54,18), self.game.get_tile_at(54,17), self.game.get_tile_at(54,16), self.game.get_tile_at(54,15), self.game.get_tile_at(54,14), self.game.get_tile_at(54,13), self.game.get_tile_at(54,12), self.game.get_tile_at(54,11), self.game.get_tile_at(54, 10), self.game.get_tile_at(54,9)]
+        self.right_right_secondary_targets = [self.game.get_tile_at(59, 26), self.game.get_tile_at(59,25), self.game.get_tile_at(59,24), self.game.get_tile_at(59,23), self.game.get_tile_at(59,22), self.game.get_tile_at(59,21), self.game.get_tile_at(59,20), self.game.get_tile_at(59,19), self.game.get_tile_at(59,18), self.game.get_tile_at(59,17), self.game.get_tile_at(59,16), self.game.get_tile_at(59,15), self.game.get_tile_at(59,14), self.game.get_tile_at(59,13), self.game.get_tile_at(59,12), self.game.get_tile_at(59,11)]
         self.river_mines = [self.game.get_tile_at(31, 15), self.game.get_tile_at(31, 16), self.game.get_tile_at(31, 17)]
 
         # Scan for gold mines, worker spawn tile, mob spawn tile
@@ -74,7 +83,7 @@ class AI(BaseAI):
                         self.river_mines.append(tile)
         '''
 
-        if self.worker_spawn.x > 31:
+        if self.right:
             self.river_spots = [self.game.get_tile_at(33,7),self.game.get_tile_at(33,8),self.game.get_tile_at(33,9),self.game.get_tile_at(33,10),self.game.get_tile_at(33,11),self.game.get_tile_at(33,12),self.game.get_tile_at(33,13),self.game.get_tile_at(33,19),self.game.get_tile_at(33,20),self.game.get_tile_at(33,21),self.game.get_tile_at(33,22)]
         else:
             self.river_spots = [self.game.get_tile_at(29,7),self.game.get_tile_at(29,8),self.game.get_tile_at(29,9),self.game.get_tile_at(29,10),self.game.get_tile_at(29,11),self.game.get_tile_at(29,12),self.game.get_tile_at(29,13),self.game.get_tile_at(29,19),self.game.get_tile_at(29,20),self.game.get_tile_at(29,21),self.game.get_tile_at(29,22)]
@@ -150,14 +159,13 @@ class AI(BaseAI):
         """
         Generating workers on strategic turns
         """
-        while(self.num_units <= 25 and self.player.gold >= 10):
-            print(self.game.current_turn, self.player.units)
+        while(self.num_units < 23 and self.player.gold >= 10):
             if self.worker_spawn.unit == None:
                 spawned = self.worker_spawn.spawn_worker()
             else:
                 break
             if self.num_units < 4 and spawned: ##inland miners
-                if self.player.units[-1].tile.x > 31:
+                if self.right:
                     for j in range(4-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_north)
                 else:
@@ -166,7 +174,7 @@ class AI(BaseAI):
                 self.num_units += 1
 
             elif self.num_units < 7 and spawned: ##island miners
-                if self.player.units[-1].tile.x > 31:
+                if self.right:
                     for j in range(7-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                 else:
@@ -174,45 +182,49 @@ class AI(BaseAI):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_east)
                 self.num_units += 1
 
-            elif self.num_units < 11 and spawned: ##wall side builders
+            elif self.num_units < 10 and spawned: ##wall side builders
                 self.num_units += 1
-                if self.player.units[-1].tile.x > 31:
+                if self.right:
                     for j in range(15-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_south)
                 else:
                     for j in range(15-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_north)
-            elif self.num_units < 16 and spawned: ##fishers
+            elif self.num_units < 20 and spawned: ##fishers
                 self.num_units += 1
-                if self.player.units[-1].tile.x > 31:
-                    for j in range(16-self.num_units):
+                if self.right:
+                    for j in range(20-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                 else:
-                    for j in range(16-self.num_units):
+                    for j in range(20-self.num_units):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_east)
-            elif self.num_units < 21 and spawned: ##river side builders
+            elif self.num_units < 23 and spawned: ##river side builders
                 self.num_units += 1
-                if self.player.units[-1].tile.x > 31:
-                    for j in range(21-self.num_units):
+                if self.right:
+                    if self.num_units == 20:
                         self.player.units[-1].move(self.player.units[-1].tile.tile_west)
-                else:
-                    for j in range(21-self.num_units):
-                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
-            elif self.num_units < 25 and spawned:
-                self.num_units += 1
-                if self.player.units[-1].tile.x > 31:
-                    for j in range(25-self.num_units):
+                        self.player.units[-1].move(self.player.units[-1].tile._tile_south)
+                    elif self.num_units == 21:
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                         self.player.units[-1].move(self.player.units[-1].tile.tile_north)
+                    else:
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                 else:
-                    for j in range(25-self.num_units):
+                    if self.num_units == 20:
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_north)
+                    elif self.num_units == 21:
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
                         self.player.units[-1].move(self.player.units[-1].tile.tile_south)
+                    else:
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
 
 
         if self.game.current_turn == self.game.river_phase - 2 or self.game.current_turn == self.game.river_phase - 3:
             i = 0
             while self.player.gold > 0 and i < 3:
                 self.worker_spawn.spawn_worker()
-                if self.player.units[-1].tile.x > 31:
+                if self.right:
                     for j in range(3-i):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                     i += 1
@@ -222,6 +234,29 @@ class AI(BaseAI):
                     i += 1
 
 
+        if self.game.current_turn == 3 or self.game.current_turn == 4:
+            if self.right:
+                for i in self.player.units[7:10]:
+                    for j in range(4):
+                        i.move(i.tile.tile_east)
+                    for j in range(4):
+                        i.move(i.tile.tile_north)
+            else:
+                for i in self.player.units[7:10]:
+                    for j in range(4):
+                        i.move(i.tile.tile_west)
+                    for j in range(4):
+                        i.move(i.tile.tile_south)
+
+        if self.game.current_turn == 5 or self.game.current_turn == 6:
+            if self.right:
+                for i in self.player.units[7:10]:
+                    for j in range(4):
+                        i.move(i.tile.tile_north)
+            else:
+                for i in self.player.units[7:10]:
+                    for j in range(4):
+                        i.move(i.tile.tile_south)
 
         '''
         Make workers go to the mines/river mines
@@ -234,7 +269,6 @@ class AI(BaseAI):
                     if closest_worker == None:
                         break
                     path = self.find_path(closest_worker.tile, mine)
-                    #print(mine, path)
                     for tiles in path:
                         closest_worker.move(tiles)
                         if closest_worker.moves == 0:
@@ -243,10 +277,9 @@ class AI(BaseAI):
                     # The unit on the mine (mine.unit) needs
                     # to mine the mine(mine(mine))
                     mine.unit.mine(mine)
-                    #print(self.player.gold)
 
-            if self.num_units > 20:
-                min_index = 23
+            if self.num_units > 18:
+                min_index = 18
                 max_index = 9999
             else:
                 min_index = 5
@@ -262,7 +295,6 @@ class AI(BaseAI):
                         if closest_worker.moves == 0:
                             break
                 if river_mine.unit != None:
-                    print("Mining the river")
                     river_mine.unit.mine(river_mine)
 
             '''
@@ -270,7 +302,7 @@ class AI(BaseAI):
             '''
             for fishing_spots in self.river_spots:
                 if fishing_spots.unit == None:
-                    closest_worker = self.closest_worker(fishing_spots, 11, 21)
+                    closest_worker = self.closest_worker(fishing_spots, 11, 20)
                     if closest_worker == None:
                         break
                     path = self.find_path(closest_worker.tile, fishing_spots)
@@ -279,7 +311,6 @@ class AI(BaseAI):
                         if closest_worker.moves == 0:
                             break
                 if fishing_spots.unit != None:
-                    print(fishing_spots.x, fishing_spots.y, fishing_spots.tile_east.is_river, fishing_spots.tile_west.is_river)
                     if fishing_spots.tile_east.is_river:
                         fishing_spots.unit.fish(fishing_spots.tile_east)
                     else:
@@ -289,36 +320,87 @@ class AI(BaseAI):
             '''
             Move tower builders
             '''
-            if self.player.side[0].x>31:
-                print("hi")
-            else:
-                for cleanser_target in self.left_primary_cleanser_targets:
-                    self.build_tower(cleanser_target)
-
-
-
-        '''
-        Generating towers
-        '''
-        i = 0
-        while(i < len(self.player.side) and self.player.gold >= 30 and self.player.mana >= 30 and not self.all_built):
-            ##if i > len(self.player.side):
-            ##    self.all_built = True
-
-            if(self.player.side[i].is_path):
-                for neighbor in self.player.side[i].get_neighbors():
-                    if self.phase == 1 and neighbor.is_grass and not neighbor.is_tower:
-                        self.build_tower(neighbor)
-                        break
-                    elif self.phase == 2:
-                        for neighborsneighbor in neighbor.get_neighbors():
-                            if neighborsneighbor.is_grass and neighborsneighbor.is_tower:
-                                self.build_tower(neighbor)
-                                break
+            if len(self.player.units) >= 23:
+                counter = 0
+                for target in range(len(self.right_left_primary_targets)):
+                    counter += 1
+                    if not self.right_left_primary_targets[target].is_tower:
+                        if target % 4 < 2:
+                            self.build_tower(self.right_left_primary_targets[target], "cleansing")
                         else:
-                            continue
-                        break
-            i+=1
+                            self.build_tower(self.right_left_primary_targets[target], "aoe")
+                        if counter == 3:
+                            break
+                counter = 0
+                for target in range(len(self.right_right_primary_targets)):
+                    counter += 1
+                    if not self.right_right_primary_targets[target].is_tower:
+                        if target % 4 < 2:
+                            self.build_tower(self.right_right_primary_targets[target], "cleansing")
+                        else:
+                            self.build_tower(self.right_right_primary_targets[target], "aoe")
+                        if counter == 3:
+                            break
+
+                else: ##only build once per unit turn
+                    counter = 0
+                    for target in range(len(self.left_left_primary_targets)):
+                        counter += 1
+                        if not self.left_left_primary_targets[target].is_tower:
+                            if target % 4 < 2:
+                                self.build_tower(self.left_left_primary_targets[target], "cleansing")
+                            else:
+                                self.build_tower(self.left_left_primary_targets[target], "aoe")
+                            if counter == 3:
+                                break
+                    counter = 0
+                    for target in range(len(self.left_right_primary_targets)):
+                        counter += 1
+                        if not self.left_right_primary_targets[target].is_tower:
+                            if target % 4 < 2:
+                                self.build_tower(self.left_right_primary_targets[target], "cleansing")
+                            else:
+                                self.build_tower(self.left_right_primary_targets[target], "aoe")
+                            if counter == 3:
+                                break
+
+        '''
+        Towers protecc and attacc
+
+        for tower in self.player.towers:
+            # Gets every tile that the tower could aim at
+            radius = tower.tile.get_neighbors()
+            radius.append(tower.tile.tile_north.tile_north)
+            radius.append(tower.tile.tile_east.tile_east)
+            radius.append(tower.tile.tile_south.tile_south)
+            radius.append(tower.tile.tile_west.tile_west)
+
+            hit_list = []
+
+            # Getting the hit list and priority
+            for tile in radius:
+                # If there is a unit on this tile, add to attack list
+                if tile.is_path:
+                    if tile.unit:
+                        if tower.job.title == "cleansing":
+                            if tile.unit.job.title == "wraith":
+                                priority = tile
+                        elif tower.job.title == "aoe":
+                            if self.num_zombies > 1:
+                                priority = tile
+                            elif self.num_ghouls > 1 or self.num_hounds > 1:
+                                priority = tile
+
+                        hit_list.append(tile)
+
+            # Time to actually ATTACK!!!
+            if priority:
+                tower.attack(priority)
+            elif len(hit_list) > 0:
+                tower.attack(hit_list[0]) # Attacks first thing it saw
+        '''
+
+
         '''
         Spawn time
         '''
@@ -349,15 +431,16 @@ class AI(BaseAI):
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
-    def build_tower(self, tile):
+    def build_tower(self, tile, title):
         if len(self.player.units):
             if tile.x == 4:
-                unit = self.closest_worker(tile, 8, 11)
+                unit = self.closest_worker(tile, 8, 10)
             elif tile.x == 7:
-                unit = self.closest_worker(tile, 21, 25)
-            else:
+                unit = self.closest_worker(tile, 21, 23)
+            elif tile.x == 55:
                 unit = self.closest_worker(tile, 8, 11)
-
+            else:
+                unit = self.closest_worker(tile, 21, 23)
             if unit == None:
                 return
             ##unit = self.closest_worker(tile, 21, 25)
@@ -367,12 +450,34 @@ class AI(BaseAI):
                 if unit.moves == 0:
                     return
             if unit.tile == tile:
-                if self.towers % 4 < 2 and self.player.gold >= 30 and self.player.mana >= 30:
-                    unit.build("cleansing")
+                built = False
+                if self.towers % 4 < 2 and self.player.gold >= 40 and self.player.mana >= 30 and title == "cleansing":
+                    built = unit.build("cleansing")
                     self.cleansers += 1
-                elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 15:
-                    unit.build("aoe")
+                elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 30 and title == "aoe":
+                    built = unit.build("aoe")
                     self.aoes += 1
+                if built:
+                    if tile.x == 4:
+                        unit.move(unit.tile.tile_west)
+                        for i in range(3):
+                            unit.move(unit.tile.tile_south)
+                        unit.move(unit.tile.tile_east)
+                    elif tile.x == 7:
+                        unit.move(unit.tile.tile_east)
+                        for i in range(3):
+                            unit.move(unit.tile.tile_south)
+                        unit.move(unit.tile.tile_west)
+                    elif tile.x == 55:
+                        unit.move(unit.tile.tile_west)
+                        for i in range(3):
+                            unit.move(unit.tile.tile_north)
+                        unit.move(unit.tile.tile_east)
+                    else:
+                        unit.move(unit.tile.tile_east)
+                        for i in range(3):
+                            unit.move(unit.tile.tile_north)
+                        unit.move(unit.tile.tile_west)
                 return
         else:
             return
@@ -380,16 +485,13 @@ class AI(BaseAI):
     def closest_worker(self, tile, low, high):
         best_distance = 9999
         best_worker = None
-        #print("default", self.game.units[0])
         worker_count = 0
         for unit in self.game.units:
-            #print(unit.owner, self.player)
-            #print(unit.job.title)
             if unit.job.title == "worker" and unit.owner == self.player:
                 worker_count += 1
-                #print(worker_count >= low, worker_count <= high, unit.acted, unit.moves > 0)
+                if unit.tile == tile:
+                    return unit
                 if worker_count >= low and worker_count <= high and not unit.acted and unit.moves > 0:
-                    #print("AHHH")
                     distance = len(self.find_path(unit.tile, tile))
                     if distance < best_distance:
                         best_distance = distance
