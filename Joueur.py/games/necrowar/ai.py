@@ -50,25 +50,14 @@ class AI(BaseAI):
         self.all_built = False
         self.phase = 1
         self.our_mines = []
-        self.worker_spawn_x = 0
-        self.worker_spawn_y = 0
-        self.monster_spawn_x = 0
-        self.monster_spawn_y = 0
-        for x in range(self.game.map_width):
-            for y in range(self.game.map_height):
-                if self.game.get_tile_at(x,y).is_gold_mine:
-                    if self.game.get_tile_at(x+1, y).owner is None and self.game.get_tile_at(x-1, y).owner is self:
-                        self.our_mines += self.game.get_tile_at(x,y)
-                    if self.game.get_tile_at(x-1, y).owner is self and self.game.get_tile_at(x+1, y).owner is None:
-                        self.our_mines += self.game.get_tile_at(x,y)
-                    if (self.game.get_tile_at(x+1, y).owner is self and self.game.get_tile_at(x-1, y).owner is not self) or (self.game.get_tile_at(x+1, y).owner is not self and self.game.get_tile_at(x-1, y).owner is self):
-                        self.our_mines += self.game.get_tile_at(x,y)
-                elif self.game.get_tile_at(x,y).is_worker_spawn:
-                    self.worker_spawn_x=x
-                    self.worker_spawn_y=y
-                elif self.game.get_tile_at(x,y).is_unit_spawn:
-                    self.worker_spawn_x=x
-                    self.worker_spawn_y=y
+
+        for tile in self.player.side:
+            if tile.is_gold_mine:
+                self.our_mines.append(tile)
+            elif tile.is_worker_spawn:
+                self.worker_spawn = tile
+            elif tile.is_unit_spawn:
+                self.unit_spawn = tile
 
         self.past_tower_list = [] # How many towers we built last round
         self.past_tower_num = 0 # Number of towers that we last had
@@ -144,53 +133,56 @@ class AI(BaseAI):
         if self.game.current_turn == 1 or self.game.current_turn == 2:
             i = 0
             while i < 10:
-                spawned = self.game.get_tile_at(self.worker_spawn_x,self.worker_spawn_y).spawn_worker()
+                spawned = self.worker_spawn.spawn_worker()
                 if i < 4 and spawned:
                     if self.player.units[-1].tile.x > 31:
-                        for i in range(4-i):
-                            self.player.units[-1].move(self.player.units[-1].tile)
+                        for j in range(4-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_north)
                     else:
-                        for i in range(4-i):
-                            self.player.units[-1].move(self.player.units[-1].tile)
+                        for j in range(4-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_south)
                 elif spawned:
                     if self.player.units[-1].tile.x > 31:
-                        for i in range(10-i):
-                            self.player.units[-1].move(self.player.units[-1].tile)
+                        for j in range(10-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_west)
                     else:
-                        for i in range(10-i):
-                            self.player.units[-1].move(self.player.units[-1].tile)
+                        for j in range(10-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_east)
                 i += 1
         elif self.game.current_turn == self.game.river_phase - 2:
             i = 0
             while self.player.gold > 0 and i < 3:
-                self.game.get_tile_at(self.worker_spawn_x,self.worker_spawn_y).spawn_worker()
+                self.worker_spawn.spawn_worker()
                 if self.player.units[-1].tile.x > 31:
-                    for i in range(3-i):
-                        self.player.units[-1].move(self.player.units[-1].tile)
+                    for j in range(3-i):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
+                    i += 1
                 else:
-                    for i in range(3-i):
-                        self.player.units[-1].move(self.player.units[-1].tile)
-                i += 1
+                    for j in range(3-i):
+                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+                    i += 1
 
 
         '''
         Make workers go to the mines/river
         '''
-
-        for mine in self.our_mines:
-            if not mine.unit:
-                closest_worker = self.closest_worker(mine, 1, 7)
-                path = self.find_path(closest_worker.tile, mine)
-                for tiles in path:
-                    closest_worker.move(tiles)
-                    if closest_worker.moves == 0:
-                        return
-            if mine.unit:
-                mine.unit.mine()
+        if len(self.player.units) != 0:
+            for mine in self.our_mines:
+                if mine.unit == None:
+                    closest_worker = self.closest_worker(mine, 1, 7)
+                    path = self.find_path(closest_worker.tile, mine)
+                    print(path)
+                    for tiles in path:
+                        closest_worker.move(tiles)
+                        if closest_worker.moves == 0:
+                            return
+                if mine.unit != None:
+                    mine.unit.mine()
 
 
         '''
         Generating towers
+        '''
         '''
         i = 0
         while(i < len(self.player.side) and self.player.gold >= 30 and self.player.mana >= 30 and not self.all_built):
@@ -211,7 +203,7 @@ class AI(BaseAI):
                             continue
                         break
             i+=1
-
+        '''
         '''
         Spawn time
         '''
@@ -225,7 +217,7 @@ class AI(BaseAI):
         # <<-- /Creer-Merge: runTurn -->>
     def build_tower(self, tile):
         if len(self.player.units):
-            unit = self.closest_worker(tile, 8, len(self.player.unit))
+            unit = self.closest_worker(tile, 8, len(self.player.units))
             path = self.find_path(unit.tile,tile)
             for tiles in path:
                 unit.move(tiles)
