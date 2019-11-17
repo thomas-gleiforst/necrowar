@@ -357,18 +357,6 @@ class AI(BaseAI):
             if len(self.player.units) >= 23:
                 if self.right:
                     counter = 0
-                    for target in range(len(self.right_right_primary_targets)):
-                        counter += 1
-                        if not self.right_right_primary_targets[target].is_tower:
-                            if target % 4 < 2:
-                                if self.player.gold >= 40 and self.player.mana >= 30:
-                                    self.build_tower(self.right_right_primary_targets[target], "aoe")
-                            else:
-                                if self.player.gold >= 40 and self.player.mana >= 30:
-                                    self.build_tower(self.right_right_primary_targets[target], "cleansing")
-                            if counter == 3:
-                                break
-                    counter = 0
                     for target in range(len(self.right_left_primary_targets)):
                         counter += 1
                         if not self.right_left_primary_targets[target].is_tower:
@@ -378,6 +366,18 @@ class AI(BaseAI):
                             else:
                                 if self.player.gold >= 40 and self.player.mana >= 30:
                                     self.build_tower(self.right_left_primary_targets[target], "cleansing")
+                            if counter == 3:
+                                break
+                    counter = 0
+                    for target in range(len(self.right_right_primary_targets)):
+                        counter += 1
+                        if not self.right_right_primary_targets[target].is_tower:
+                            if target % 4 < 2:
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_right_primary_targets[target], "aoe")
+                            else:
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_right_primary_targets[target], "cleansing")
                             if counter == 3:
                                 break
 
@@ -582,13 +582,6 @@ class AI(BaseAI):
                                 for zombies in range(tile.corpses):
                                     if self.player.mana >= 2:
                                         resed = tile.res(1)
-                                        print(resed)
-                                        if not resed and self.unit_spawn.unit != None:
-                                            print("Previous res failed")
-                                            self.unit_spawn.unit.move(self.unit_spawn.tile_west)
-                                            self.unit_spawn.tile_west.unit.move(self.unit_spawn.tile_west.tile_west)
-                                            resed = tile.res(1)
-                                            print(resed)
                                         if resed:
                                             self.unit_spawn.unit.move(self.unit_spawn.tile_west)
                             elif self.unit_spawn.tile_west.num_zombies == 10 or (self.player.mana < 2 and self.unit_spawn.tile_west.num_zombies > 0):
@@ -603,13 +596,6 @@ class AI(BaseAI):
                                 for zombies in range(tile.corpses):
                                     if self.player.mana >= 2:
                                         resed = tile.res(1)
-                                        print(resed)
-                                        if not resed and self.unit_spawn.unit != None:
-                                            print("Previous res failed")
-                                            self.unit_spawn.unit.move(self.unit_spawn.tile_east)
-                                            self.unit_spawn.tile_east.unit.move(self.unit_spawn.tile_east.tile_east)
-                                            resed = tile.res(1)
-                                            print(resed)
                                         if resed:
                                             self.unit_spawn.unit.move(self.unit_spawn.tile_east)
                             elif self.unit_spawn.tile_east.num_zombies == 10 or (self.player.mana < 2 and self.unit_spawn.tile_east.num_zombies > 0):
