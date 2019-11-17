@@ -49,6 +49,7 @@ class AI(BaseAI):
         self.aoes = 0
         self.towers = 0
         self.all_built = False
+        self.first_wave = True
         self.phase = 1
         self.our_mines = []
         self.river_mines = []
@@ -130,7 +131,7 @@ class AI(BaseAI):
         Check for phase 1 to 2: When 25 workers have been made
         '''
         if self.phase == 1:
-            if self.num_units >= 23:
+            if self.num_units >= 23 and self.game.current_turn > 50:
                 self.phase = 3
 
 
@@ -251,18 +252,21 @@ class AI(BaseAI):
                         self.player.units[-1].move(self.player.units[-1].tile.tile_east)
 
 
-        if self.game.current_turn == self.game.river_phase - 2 or self.game.current_turn == self.game.river_phase - 3:
-            i = 0
-            while self.player.gold > 0 and i < 3:
-                self.worker_spawn.spawn_worker()
-                if self.right:
-                    for j in range(3-i):
-                        self.player.units[-1].move(self.player.units[-1].tile.tile_west)
-                    i += 1
-                else:
-                    for j in range(3-i):
-                        self.player.units[-1].move(self.player.units[-1].tile.tile_east)
-                    i += 1
+        if self.game.current_turn%self.game.river_phase == self.game.river_phase - 2 or self.game.current_turn%self.game.river_phase == self.game.river_phase - 3:
+            if not self.first_wave:
+                i = 0
+                while self.player.gold > 0 and i < 3:
+                    self.worker_spawn.spawn_worker()
+                    if self.right:
+                        for j in range(3-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_west)
+                        i += 1
+                    else:
+                        for j in range(3-i):
+                            self.player.units[-1].move(self.player.units[-1].tile.tile_east)
+                        i += 1
+            else:
+                self.first_wave = False
 
 
         if self.game.current_turn == 3 or self.game.current_turn == 4:
@@ -351,27 +355,27 @@ class AI(BaseAI):
             Move tower builders
             '''
             if len(self.player.units) >= 23:
-                counter = 0
-                for target in range(len(self.right_left_primary_targets)):
-                    counter += 1
-                    if not self.right_left_primary_targets[target].is_tower:
-                        if target % 4 < 2:
-                            self.build_tower(self.right_left_primary_targets[target], "cleansing")
-                        else:
-                            self.build_tower(self.right_left_primary_targets[target], "aoe")
-                        if counter == 3:
-                            break
-                counter = 0
-                for target in range(len(self.right_right_primary_targets)):
-                    counter += 1
-                    if not self.right_right_primary_targets[target].is_tower:
-                        if target % 4 < 2:
-                            self.build_tower(self.right_right_primary_targets[target], "cleansing")
-                        else:
-                            self.build_tower(self.right_right_primary_targets[target], "aoe")
-                        if counter == 3:
-                            break
-                # FIXME: Is this intended??????
+                if self.right:
+                    counter = 0
+                    for target in range(len(self.right_left_primary_targets)):
+                        counter += 1
+                        if not self.right_left_primary_targets[target].is_tower:
+                            if target % 4 < 2:
+                                self.build_tower(self.right_left_primary_targets[target], "cleansing")
+                            else:
+                                self.build_tower(self.right_left_primary_targets[target], "aoe")
+                            if counter == 3:
+                                break
+                    counter = 0
+                    for target in range(len(self.right_right_primary_targets)):
+                        counter += 1
+                        if not self.right_right_primary_targets[target].is_tower:
+                            if target % 4 < 2:
+                                self.build_tower(self.right_right_primary_targets[target], "cleansing")
+                            else:
+                                self.build_tower(self.right_right_primary_targets[target], "aoe")
+                            if counter == 3:
+                                break
                 else: ##only build once per unit turn
                     counter = 0
                     for target in range(len(self.left_left_primary_targets)):
@@ -439,7 +443,7 @@ class AI(BaseAI):
         '''
         Spawn time
         '''
-        '''
+
         if self.phase == 3:
             while(self.player.gold >= 20 and self.player.mana >= 5):
 
@@ -473,7 +477,7 @@ class AI(BaseAI):
                         for neighbor in unit.tile.get_neighbors():
                             if neighbor.is_castle:
                                 unit.attack(neighbor)
-        '''
+
 
 
         return True
@@ -597,7 +601,7 @@ class AI(BaseAI):
 
                 # if the tile exists, has not been explored or added to the
                 # fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river and not neighbor.is_unit_spawn:
+                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river:
                     # add it to the tiles to be explored and add where it came
                     # from for path reconstruction.
                     fringe.append(neighbor)
