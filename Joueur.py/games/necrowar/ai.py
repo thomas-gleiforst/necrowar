@@ -59,10 +59,10 @@ class AI(BaseAI):
         self.left_right_primary_targets = [self.game.get_tile_at(7,8), self.game.get_tile_at(7,9), self. game.get_tile_at(7,10), self.game.get_tile_at(7,11), self.game.get_tile_at(7,12), self.game.get_tile_at(7, 13), self.game.get_tile_at(7,14), self.game.get_tile_at(7,15), self.game.get_tile_at(7,16), self.game.get_tile_at(7,17), self.game.get_tile_at(7,18), self.game.get_tile_at(7,19), self.game.get_tile_at(7,20), self.game.get_tile_at(7,21), self.game.get_tile_at(4,22)]
         self.left_left_secondary_targets = [self.game.get_tile_at(3,8), self.game.get_tile_at(3,9), self.game.get_tile_at(3,10), self.game.get_tile_at(3,11), self.game.get_tile_at(3,12), self.game.get_tile_at(3,13), self.game.get_tile_at(3,14), self.game.get_tile_at(3,15), self.game.get_tile_at(3,16), self.game.get_tile_at(3,17), self.game.get_tile_at(3,18), self.game.get_tile_at(3,19), self.game.get_tile_at(3,20), self.game.get_tile_at(3,21), self.game.get_tile_at(3, 22), self.game.get_tile_at(3,23), self.game.get_tile_at(3,24), self.game.get_tile_at(3,25), self.game.get_tile_at(3,26)]
         self.left_right_secondary_targets = [self.game.get_tile_at(8,8), self.game.get_tile_at(8,9), self. game.get_tile_at(8,10), self.game.get_tile_at(8,11), self.game.get_tile_at(8,12), self.game.get_tile_at(8, 13), self.game.get_tile_at(8,14), self.game.get_tile_at(8,15), self.game.get_tile_at(8,16), self.game.get_tile_at(8,17), self.game.get_tile_at(8,18), self.game.get_tile_at(8,19), self.game.get_tile_at(8,20), self.game.get_tile_at(8,21), self.game.get_tile_at(4,22)]
-        self.right_left_primary_targets = [self.game.get_tile_at(55, 26), self.game.get_tile_at(55,25), self.game.get_tile_at(55,24), self.game.get_tile_at(55,23), self.game.get_tile_at(55,22), self.game.get_tile_at(55,21), self.game.get_tile_at(55,20), self.game.get_tile_at(55,19), self.game.get_tile_at(55,18), self.game.get_tile_at(55,17), self.game.get_tile_at(55,16), self.game.get_tile_at(55,15), self.game.get_tile_at(55,14), self.game.get_tile_at(55,13), self.game.get_tile_at(55,12), self.game.get_tile_at(55,11), self.game.get_tile_at(55, 10), self.game.get_tile_at(55,9)]
-        self.right_right_primary_targets = [self.game.get_tile_at(58, 26), self.game.get_tile_at(58,25), self.game.get_tile_at(58,24), self.game.get_tile_at(58,23), self.game.get_tile_at(58,22), self.game.get_tile_at(58,21), self.game.get_tile_at(58,20), self.game.get_tile_at(58,19), self.game.get_tile_at(58,18), self.game.get_tile_at(58,17), self.game.get_tile_at(58,16), self.game.get_tile_at(58,15), self.game.get_tile_at(58,14), self.game.get_tile_at(58,13), self.game.get_tile_at(58,12), self.game.get_tile_at(58,11)]
-        self.right_left_secondary_targets = [self.game.get_tile_at(54, 26), self.game.get_tile_at(54,25), self.game.get_tile_at(54,24), self.game.get_tile_at(54,23), self.game.get_tile_at(54,22), self.game.get_tile_at(54,21), self.game.get_tile_at(54,20), self.game.get_tile_at(54,19), self.game.get_tile_at(54,18), self.game.get_tile_at(54,17), self.game.get_tile_at(54,16), self.game.get_tile_at(54,15), self.game.get_tile_at(54,14), self.game.get_tile_at(54,13), self.game.get_tile_at(54,12), self.game.get_tile_at(54,11), self.game.get_tile_at(54, 10), self.game.get_tile_at(54,9)]
-        self.right_right_secondary_targets = [self.game.get_tile_at(59, 26), self.game.get_tile_at(59,25), self.game.get_tile_at(59,24), self.game.get_tile_at(59,23), self.game.get_tile_at(59,22), self.game.get_tile_at(59,21), self.game.get_tile_at(59,20), self.game.get_tile_at(59,19), self.game.get_tile_at(59,18), self.game.get_tile_at(59,17), self.game.get_tile_at(59,16), self.game.get_tile_at(59,15), self.game.get_tile_at(59,14), self.game.get_tile_at(59,13), self.game.get_tile_at(59,12), self.game.get_tile_at(59,11)]
+        self.right_left_primary_targets = [self.game.get_tile_at(55,23), self.game.get_tile_at(55,22), self.game.get_tile_at(55,21), self.game.get_tile_at(55,20), self.game.get_tile_at(55,19), self.game.get_tile_at(55,18), self.game.get_tile_at(55,17), self.game.get_tile_at(55,16), self.game.get_tile_at(55,15), self.game.get_tile_at(55,14), self.game.get_tile_at(55,13), self.game.get_tile_at(55,12), self.game.get_tile_at(55,11), self.game.get_tile_at(55, 10), self.game.get_tile_at(55,9)]
+        self.right_right_primary_targets = [self.game.get_tile_at(58,23), self.game.get_tile_at(58,22), self.game.get_tile_at(58,21), self.game.get_tile_at(58,20), self.game.get_tile_at(58,19), self.game.get_tile_at(58,18), self.game.get_tile_at(58,17), self.game.get_tile_at(58,16), self.game.get_tile_at(58,15), self.game.get_tile_at(58,14), self.game.get_tile_at(58,13), self.game.get_tile_at(58,12), self.game.get_tile_at(58,11)]
+        self.right_left_secondary_targets = [self.game.get_tile_at(54,23), self.game.get_tile_at(54,22), self.game.get_tile_at(54,21), self.game.get_tile_at(54,20), self.game.get_tile_at(54,19), self.game.get_tile_at(54,18), self.game.get_tile_at(54,17), self.game.get_tile_at(54,16), self.game.get_tile_at(54,15), self.game.get_tile_at(54,14), self.game.get_tile_at(54,13), self.game.get_tile_at(54,12), self.game.get_tile_at(54,11), self.game.get_tile_at(54, 10), self.game.get_tile_at(54,9)]
+        self.right_right_secondary_targets = [self.game.get_tile_at(59,23), self.game.get_tile_at(59,22), self.game.get_tile_at(59,21), self.game.get_tile_at(59,20), self.game.get_tile_at(59,19), self.game.get_tile_at(59,18), self.game.get_tile_at(59,17), self.game.get_tile_at(59,16), self.game.get_tile_at(59,15), self.game.get_tile_at(59,14), self.game.get_tile_at(59,13), self.game.get_tile_at(59,12), self.game.get_tile_at(59,11)]
         self.river_mines = [self.game.get_tile_at(31, 15), self.game.get_tile_at(31, 16), self.game.get_tile_at(31, 17)]
 
         # Scan for gold mines, worker spawn tile, mob spawn tile
@@ -126,6 +126,35 @@ class AI(BaseAI):
         self.past_tower_num = self.towers # Update our number of towers
         self.past_tower_list = self.player.towers # Update our tower list
 
+        '''
+        Check for phase 1 to 2: When 25 workers have been made
+        '''
+        if self.phase == 1:
+            if self.num_units >= 23:
+                self.phase = 3
+
+
+        '''
+        Check for phase 2 to 3: When initial tower list has been built
+        '''
+        '''
+        Smart method
+        if self.phase == 2:
+            if len(self.left_left_primary_targets) == 0:
+                if len(self.left_right_primary_targets) == 0:
+                    if len(self.right_left_primary_targets) == 0:
+                        if len(self.right_right_primary_targets) == 0:
+                            self.phase = 3
+        '''
+        if self.phase == 2:
+            if self.towers > 30:
+                self.phase = 3
+                print("PHASE THREE============================================")
+
+        '''
+        Check for phase 3 to 4: End game time
+        '''
+
         # <<-- /Creer-Merge: game-updated -->>
 
     def end(self, won, reason):
@@ -139,6 +168,8 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: end -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your end logic
+        print("Num units" + str(self.num_units))
+        print("Phase:" + str(self.phase))
         # <<-- /Creer-Merge: end -->>
     def run_turn(self):
 
@@ -152,8 +183,8 @@ class AI(BaseAI):
         '''
         Rebuild
         '''
-        for towers in self.destroyed_towers:
-            build_tower(towers)
+        #for towers in self.destroyed_towers:
+           # self.build_tower(towers)
 
 
         """
@@ -316,7 +347,6 @@ class AI(BaseAI):
                     else:
                         fishing_spots.unit.fish(fishing_spots.tile_west)
 
-
             '''
             Move tower builders
             '''
@@ -341,7 +371,7 @@ class AI(BaseAI):
                             self.build_tower(self.right_right_primary_targets[target], "aoe")
                         if counter == 3:
                             break
-
+                # FIXME: Is this intended??????
                 else: ##only build once per unit turn
                     counter = 0
                     for target in range(len(self.left_left_primary_targets)):
@@ -364,8 +394,10 @@ class AI(BaseAI):
                             if counter == 3:
                                 break
 
+
         '''
         Towers protecc and attacc
+        '''
 
         for tower in self.player.towers:
             # Gets every tile that the tower could aim at
@@ -376,8 +408,11 @@ class AI(BaseAI):
             radius.append(tower.tile.tile_west.tile_west)
 
             hit_list = []
+            priority = None
 
             # Getting the hit list and priority
+            priority_set = False
+
             for tile in radius:
                 # If there is a unit on this tile, add to attack list
                 if tile.is_path:
@@ -388,7 +423,8 @@ class AI(BaseAI):
                         elif tower.job.title == "aoe":
                             if self.num_zombies > 1:
                                 priority = tile
-                            elif self.num_ghouls > 1 or self.num_hounds > 1:
+                                priority_set = True
+                            elif (self.num_ghouls > 1 or self.num_hounds > 1) and not priority_set:
                                 priority = tile
 
                         hit_list.append(tile)
@@ -398,34 +434,46 @@ class AI(BaseAI):
                 tower.attack(priority)
             elif len(hit_list) > 0:
                 tower.attack(hit_list[0]) # Attacks first thing it saw
-        '''
 
 
         '''
         Spawn time
         '''
-
+        '''
         if self.phase == 3:
             while(self.player.gold >= 20 and self.player.mana >= 5):
-                self.unit_spawn.spawn_unit("ghoul")
+
+                if self.unit_spawn.unit == None:
+                    spawned = self.unit_spawn.spawn_unit("ghoul")
+                else:
+                    break
 
                 for unit in self.player.units:
                     # Ghouls move if there is no castle tile. Otherwise ATTACK!
-                    if unit.job == "ghoul":
-                        ghoul_path = self.find_path(unit.tile, self.player.opponent.home_base())
+                    if unit.job.title == "ghoul":
+                        while unit.moves:
+                            # Figures out how to move based on whether they are
+                            # left or right of the screen
+                            if self.right:
+                                # Move horizontal then vertical
+                                if unit.tile.x >= 7:
+                                    unit.move(unit.tile.tile_west)
+                                else:
+                                    unit.move(unit.tile.tile_north)
+                            else:
+                                if unit.tile.x <= 55:
+                                    unit.move(unit.tile.tile_east)
+                                else:
+                                    unit.move(unit.tile.tile_south)
 
-                        # If ghoul has moves it will move closer to the enemy
-                        if not unit.moves:
-                            for tile in ghoul_path:
-                                unit.move(tile)
+                            #if unit.moves == 0:
+                                #break
 
-                                if unit.moves == 0:
-                                    break
-
-                            # Ghouls will attack any castle in sight
-                            for neighbor in unit.tile.get_neighbors():
-                                if neighbor.is_castle():
-                                    unit.attack(neighbor)
+                        # Ghouls will attack any castle in sight
+                        for neighbor in unit.tile.get_neighbors():
+                            if neighbor.is_castle:
+                                unit.attack(neighbor)
+        '''
 
 
         return True
@@ -549,7 +597,7 @@ class AI(BaseAI):
 
                 # if the tile exists, has not been explored or added to the
                 # fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river:
+                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river and not neighbor.is_unit_spawn:
                     # add it to the tiles to be explored and add where it came
                     # from for path reconstruction.
                     fringe.append(neighbor)
