@@ -191,7 +191,7 @@ class AI(BaseAI):
         """
         Generating workers on strategic turns
         """
-        while(self.num_units < 23 and self.player.gold >= 10):
+        while(self.num_units < 26 and self.player.gold >= 10):
             if self.worker_spawn.unit == None:
                 spawned = self.worker_spawn.spawn_worker()
             else:
@@ -361,9 +361,11 @@ class AI(BaseAI):
                         counter += 1
                         if not self.right_left_primary_targets[target].is_tower:
                             if target % 4 < 2:
-                                self.build_tower(self.right_left_primary_targets[target], "cleansing")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_left_primary_targets[target], "aoe")
                             else:
-                                self.build_tower(self.right_left_primary_targets[target], "aoe")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_left_primary_targets[target], "cleansing")
                             if counter == 3:
                                 break
                     counter = 0
@@ -371,20 +373,25 @@ class AI(BaseAI):
                         counter += 1
                         if not self.right_right_primary_targets[target].is_tower:
                             if target % 4 < 2:
-                                self.build_tower(self.right_right_primary_targets[target], "cleansing")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_right_primary_targets[target], "aoe")
                             else:
-                                self.build_tower(self.right_right_primary_targets[target], "aoe")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.right_right_primary_targets[target], "cleansing")
                             if counter == 3:
                                 break
                 else: ##only build once per unit turn
+
                     counter = 0
                     for target in range(len(self.left_left_primary_targets)):
                         counter += 1
                         if not self.left_left_primary_targets[target].is_tower:
                             if target % 4 < 2:
-                                self.build_tower(self.left_left_primary_targets[target], "cleansing")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.left_left_primary_targets[target], "aoe")
                             else:
-                                self.build_tower(self.left_left_primary_targets[target], "aoe")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.left_left_primary_targets[target], "cleansing")
                             if counter == 3:
                                 break
                     counter = 0
@@ -392,9 +399,11 @@ class AI(BaseAI):
                         counter += 1
                         if not self.left_right_primary_targets[target].is_tower:
                             if target % 4 < 2:
-                                self.build_tower(self.left_right_primary_targets[target], "cleansing")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.left_right_primary_targets[target], "aoe")
                             else:
-                                self.build_tower(self.left_right_primary_targets[target], "aoe")
+                                if self.player.gold >= 40 and self.player.mana >= 30:
+                                    self.build_tower(self.left_right_primary_targets[target], "cleansing")
                             if counter == 3:
                                 break
 
@@ -424,14 +433,18 @@ class AI(BaseAI):
                         if tower.job.title == "cleansing":
                             if tile.unit.job.title == "wraith":
                                 priority = tile
+
+                            if tile.unit.job.title == "wraith" or tile.unit.job.title == "abomination":
+                                hit_list.append(tile)
+
                         elif tower.job.title == "aoe":
-                            if self.num_zombies > 1:
+                            if tile.num_zombies > 1:
                                 priority = tile
                                 priority_set = True
-                            elif (self.num_ghouls > 1 or self.num_hounds > 1) and not priority_set:
+                            elif (tile.num_ghouls > 1 or tile.num_hounds > 1) and not priority_set:
                                 priority = tile
 
-                        hit_list.append(tile)
+                            hit_list.append(tile)
 
             # Time to actually ATTACK!!!
             if priority:
@@ -452,31 +465,112 @@ class AI(BaseAI):
                 else:
                     break
 
-                for unit in self.player.units:
-                    # Ghouls move if there is no castle tile. Otherwise ATTACK!
-                    if unit.job.title == "ghoul":
-                        while unit.moves:
-                            # Figures out how to move based on whether they are
-                            # left or right of the screen
-                            if self.right:
-                                # Move horizontal then vertical
-                                if unit.tile.x >= 7:
+            for unit in self.player.units:
+                # Ghouls move if there is no adjacent castle tile. Otherwise ATTACK!
+                if unit.job.title == "ghoul":
+                    while unit.moves:
+                        # Figures out how to move based on whether they are
+                        # left or right of the screen
+                        if self.right:
+                            # Move horizontal then vertical
+                            if unit.tile.x >= 7:
+                                if( unit.tile.tile_west.unit == None or unit.tile.tile_west.unit.job.per_tile != unit.tile.tile_west.num_ghouls):
                                     unit.move(unit.tile.tile_west)
                                 else:
+                                    break
+                            elif unit.tile.y > 7:
+                                if( unit.tile.tile_north.unit == None or unit.tile.tile_north.unit.job.per_tile != unit.tile.tile_north.num_ghouls):
                                     unit.move(unit.tile.tile_north)
+                                else:
+                                    break
                             else:
-                                if unit.tile.x <= 55:
+                                unit.attack(unit.tile.tile_north)
+                                break
+                        else:
+                            if unit.tile.x <= 55:
+                                if( unit.tile.tile_east.unit == None or unit.tile.tile_east.unit.job.per_tile != unit.tile.tile_east.num_ghouls):
                                     unit.move(unit.tile.tile_east)
                                 else:
+                                    break
+                            elif unit.tile.y < 24:
+                                if( unit.tile.tile_south.unit == None or unit.tile.tile_south.unit.job.per_tile != unit.tile.tile_south.num_ghouls):
                                     unit.move(unit.tile.tile_south)
+                                else:
+                                    break
+                            else:
+                                unit.attack(unit.tile.tile_south)
+                                break
+                        #if unit.moves == 0:
+                            #break
 
-                            #if unit.moves == 0:
-                                #break
+                if unit.job.title == "zombie":
+                    while unit.moves:
+                        # Figures out how to move based on whether they are
+                        # left or right of the screen
+                        if self.right:
+                            # Move horizontal then vertical
+                            if unit.tile.x >= 6:
+                                if( unit.tile.tile_west.unit == None or unit.tile.tile_west.unit.job.per_tile != unit.tile.tile_west.num_ghouls):
+                                    unit.move(unit.tile.tile_west)
+                                else:
+                                    break
+                            elif unit.tile.y > 6:
+                                if( unit.tile.tile_north.unit == None or unit.tile.tile_north.unit.job.per_tile != unit.tile.tile_north.num_ghouls):
+                                    unit.move(unit.tile.tile_north)
+                                else:
+                                    break
+                            else:
+                                unit.attack(unit.tile.tile_east)
+                                break
+                        else:
+                            if unit.tile.x <= 56:
+                                if( unit.tile.tile_west.unit == None or unit.tile.tile_west.unit.job.per_tile != unit.tile.tile_west.num_ghouls):
+                                    unit.move(unit.tile.tile_east)
+                                else:
+                                    break
+                            elif unit.tile.y < 25:
+                                if( unit.tile.tile_east.unit == None or unit.tile.tile_east.unit.job.per_tile != unit.tile.tile_east.num_ghouls):
+                                    unit.move(unit.tile.tile_south)
+                                else:
+                                    break
+                            else:
+                                unit.attack(unit.tile.tile_west)
+                                break
 
-                        # Ghouls will attack any castle in sight
+                        '''
+                        # Ghouls (and zombies) will attack any castle in sight
                         for neighbor in unit.tile.get_neighbors():
                             if neighbor.is_castle:
                                 unit.attack(neighbor)
+                        '''
+
+            '''
+            Use our excess mana to spawn lots of zombies
+            '''
+            if self.right:
+                if self.game.current_turn > 50 and ((self.game.current_turn % 25) < 2):
+                    for tile in self.game.tiles:
+                        if tile.corpses:
+                            if self.player.mana >= 2 and self.unit_spawn.tile_west.num_zombies < 10 and self.unit_spawn.tile_west.tile_south.unit == None:
+                                resed = tile.res(tile.corpses)
+                                if resed:
+                                    self.unit_spawn.unit.move(self.unit_spawn.tile_west)
+                            elif self.unit_spawn.tile_west.num_zombies == 10 or (self.player.mana < 2 and self.unit_spawn.tile_west.num_zombies > 0):
+                                self.unit_spawn.tile_west.unit.move(self.unit_spawn.tile_west.tile_south)
+                                self.unit_spawn.tile_west.tile_south.unit.move(self.unit_spawn.tile_west.tile_south.tile_west)
+
+            else:
+                if self.game.current_turn > 50 and ((self.game.current_turn % 25) < 2):
+                    for tile in self.game.tiles:
+                        if tile.corpses:
+                            if self.player.mana >= 2 and self.unit_spawn.tile_east.num_zombies < 10 and self.unit_spawn.tile_east.tile_north.unit == None:
+                                resed = tile.res(tile.corpses)
+                                if resed:
+                                    self.unit_spawn.unit.move(self.unit_spawn.tile_east)
+                            elif self.unit_spawn.tile_east.num_zombies == 10 or (self.player.mana < 2 and self.unit_spawn.tile_east.num_zombies > 0):
+                                self.unit_spawn.tile_west.unit.move(self.unit_spawn.tile_east.tile_north)
+                                self.unit_spawn.tile_east.tile_north.unit.move(self.unit_spawn.tile_east.tile_north.tile_east)
+
 
 
 
@@ -503,12 +597,12 @@ class AI(BaseAI):
                     return
             if unit.tile == tile:
                 built = False
-                if self.towers % 4 < 2 and self.player.gold >= 40 and self.player.mana >= 30 and title == "cleansing":
-                    built = unit.build("cleansing")
-                    self.cleansers += 1
-                elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 30 and title == "aoe":
+                if self.towers % 4 < 2 and title == "aoe":
                     built = unit.build("aoe")
                     self.aoes += 1
+                elif self.towers % 4 < 4 and title == "cleansing":
+                    built = unit.build("cleansing")
+                    self.cleansers += 1
                 if built:
                     if tile.x == 4:
                         unit.move(unit.tile.tile_west)
@@ -601,7 +695,7 @@ class AI(BaseAI):
 
                 # if the tile exists, has not been explored or added to the
                 # fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river:
+                if neighbor and neighbor.id not in came_from and neighbor.unit == None and not neighbor.is_river and not neighbor.is_unit_spawn:
                     # add it to the tiles to be explored and add where it came
                     # from for path reconstruction.
                     fringe.append(neighbor)
