@@ -40,9 +40,9 @@ class AI(BaseAI):
         """ This is called once the game starts and your AI knows its player and
             game. You can initialize your AI here.
         """
-
+        # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         '''
-        Find coordinates of all the mines
+        Find coordinates of all the mines (among other things)
         '''
         self.cleansers = 0
         self.aoes = 0
@@ -70,7 +70,6 @@ class AI(BaseAI):
                     self.worker_spawn_x=x
                     self.worker_spawn_y=y
 
-        # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         self.past_tower_list = [] # How many towers we built last round
         self.past_tower_num = 0 # Number of towers that we last had
         self.destroyed_towers = [] # Towers that we lost
@@ -142,24 +141,45 @@ class AI(BaseAI):
         """
         Generating workers on strategic turns
         """
-        if self.game.current_turn == 1:
+        if self.game.current_turn == 1 or self.game.current_turn == 2:
             i = 0
             while i < 10:
-                self.game.get_tile_at(self.worker_spawn_x,self.worker_spawn_y).spawn_worker()
+                spawned = self.game.get_tile_at(self.worker_spawn_x,self.worker_spawn_y).spawn_worker()
+                if i < 4 and spawned:
+                    if self.player.units[-1].tile.x > 31:
+                        for i in range(4-i):
+                            self.player.units[-1].move(self.player.units[-1].tile)
+                    else:
+                        for i in range(4-i):
+                            self.player.units[-1].move(self.player.units[-1].tile)
+                elif spawned:
+                    if self.player.units[-1].tile.x > 31:
+                        for i in range(10-i):
+                            self.player.units[-1].move(self.player.units[-1].tile)
+                    else:
+                        for i in range(10-i):
+                            self.player.units[-1].move(self.player.units[-1].tile)
                 i += 1
-        elif self.game.river_phase:
+        elif self.game.current_turn == self.game.river_phase - 2:
             i = 0
             while self.player.gold > 0 and i < 3:
                 self.game.get_tile_at(self.worker_spawn_x,self.worker_spawn_y).spawn_worker()
+                if self.player.units[-1].tile.x > 31:
+                    for i in range(3-i):
+                        self.player.units[-1].move(self.player.units[-1].tile)
+                else:
+                    for i in range(3-i):
+                        self.player.units[-1].move(self.player.units[-1].tile)
                 i += 1
 
 
-
-        #Make workers go to the mines/river
+        '''
+        Make workers go to the mines/river
+        '''
 
         for mine in self.our_mines:
             if not mine.unit:
-                closest_worker = self.closest_worker(mine)
+                closest_worker = self.closest_worker(mine, 1, 7)
                 path = self.find_path(closest_worker.tile, mine)
                 for tiles in path:
                     closest_worker.move(tiles)
@@ -204,30 +224,36 @@ class AI(BaseAI):
         return True
         # <<-- /Creer-Merge: runTurn -->>
     def build_tower(self, tile):
-        unit = self.closest_worker(tile)
-        path = self.find_path(unit.tile,tile)
-        for tiles in path:
-            unit.move(tiles)
-            if unit.moves == 0:
+        if len(self.player.units):
+            unit = self.closest_worker(tile, 8, len(self.player.unit))
+            path = self.find_path(unit.tile,tile)
+            for tiles in path:
+                unit.move(tiles)
+                if unit.moves == 0:
+                    return
+            if unit.tile == tile:
+                if self.towers % 4 < 2 and self.player.gold >= 30 and self.player.mana >= 30:
+                    unit.build("cleansing")
+                    self.cleansers += 1
+                elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 15:
+                    unit.build("aoe")
+                    self.aoe += 1
                 return
-        if unit.tile == tile:
-            if self.towers % 4 < 2 and self.player.gold >= 30 and self.player.mana >= 30:
-                unit.build("cleansing")
-                self.cleansers += 1
-            elif self.towers % 4 < 4 and self.player.gold >= 40 and self.player.mana >= 15:
-                unit.build("aoe")
-                self.aoe += 1
+        else:
             return
 
-    def closest_worker(self, tile):
+    def closest_worker(self, tile, low, high):
         best_distance = 9999
         best_worker = self.game.units[0]
+        worker_count = 0
         for unit in self.game.units:
-            if unit.job == "worker" and not unit.acted and unit.moves > 0:
-                distance = (((tile.x-unit.x)**2+(tile.y-unit.y)**2))**(1/2)
-                if distance < best_distance:
-                    best_distance = distance
-                    best_worker = unit
+            if unit.job == "worker":
+                worker_count += 1
+                if worker_count > low and worker_count < high and not unit.acted and unit.moves > 0:
+                    distance = (((tile.x-unit.x)**2+(tile.y-unit.y)**2))**(1/2)
+                    if distance < best_distance:
+                        best_distance = distance
+                        best_worker = unit
 
         return best_worker
 
