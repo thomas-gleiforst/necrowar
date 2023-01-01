@@ -33,7 +33,7 @@
     "express-handlebars": "3.1.0",
     "fs-extra": "8.1.0",
     "gaussian": "1.1.0",
-    "json5": "2.1.1",
+    "json5": "2.2.2",
     "lark-websocket": "github:JacobFischer/lark-websocket.git#19c02d13cd5e0de098196e4b43089d571c55714c",
     "lodash": "4.17.15",
     "moment": "2.24.0",
